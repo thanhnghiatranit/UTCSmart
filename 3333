@@ -1,0 +1,75 @@
+MSTCUS_dao
+public ArrayList<MSTCUSTOMER> getSearch(String name, String sex, String birthday1, String birthday2 ) {
+		Connection conn = JDBC_Connection.getConnection();
+		String sql = "SELECT * FROM MSTCUSTOMER WHERE CUSTOMER_NAME LIKE ? AND SEX LIKE ? ";
+		if(birthday1!=null&&birthday2!=null) {
+			sql += "AND BIRTHDAY >= ? AND BIRTHDAY <= ?";
+		}
+		ArrayList list = new ArrayList();
+		try {
+			PreparedStatement ps = (PreparedStatement) conn.prepareStatement(sql);
+			//
+			System.out.println(sql);
+			ps.setString(1, "%"+name+"%");
+			ps.setString(2, "%"+sex+"%");
+			
+			if(birthday1!=null&&birthday2!=null) {
+				ps.setString(3, birthday1);
+				ps.setString(4, birthday2);
+			}
+			
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				MSTCUSTOMER mstcustomer = new MSTCUSTOMER() {
+				};
+				mstcustomer.setS_customerID(rs.getString("CUSTOMER_ID"));
+				mstcustomer.setS_customerName(rs.getString("CUSTOMER_NAME"));
+				mstcustomer.setS_sex(rs.getString("SEX"));
+				mstcustomer.setS_birthday(rs.getDate("BIRTHDAY"));
+				mstcustomer.setS_address(rs.getString("ADDRESS"));
+				mstcustomer.setS_email(rs.getString("EMAIL"));
+				mstcustomer.setD_deleteYMD(rs.getDate("DELETE_YMD"));
+				mstcustomer.setD_insertYMD(rs.getDate("INSERT_YMD"));
+				mstcustomer.setD_updateYMD(rs.getDate("UPDATE_YMD"));
+				list.add(mstcustomer);
+			}
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+
+	public static void main(String[] args) {
+		MSTCUSTOMER_DAO dao = new MSTCUSTOMER_DAO();
+
+		// if (dao.DeleteByID("1"))
+		// System.out.println("ok");
+		// else
+		// System.out.println("not ok");
+
+		/*MSTCUSTOMER cus = new MSTCUSTOMER();
+		// CUSTOMER_NAME, SEX, ADDRESS, BIRHDAY, EMAIL, UPDATEYMD, INSERTYMD, DELETEYMD
+		cus.setS_customerName("bi");
+		cus.setS_sex("male");
+		cus.setS_address("quan9");
+		cus.setS_birthday(new Date(2008, 11, 11));
+		cus.setS_email("mail");
+		cus.setD_updateYMD(new Date(2008, 11, 11));
+		cus.setD_insertYMD(new Date(2008, 11, 11));
+		cus.setD_deleteYMD(new Date(2008, 11, 11));
+
+		if (dao.CreateNew(cus))
+			System.out.println("ok");
+		else
+			System.out.println("not ok");*/
+		
+		for (MSTCUSTOMER cus : dao.getSearch("", "", null, null)) {
+			System.out.println(cus.toString());
+		}
+		
+		for (MSTCUSTOMER cus : dao.getSearch("", "", "1982-02-04", "1982-02-07")) {
+			System.out.println(cus.toString());
+		}
+		
