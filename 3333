@@ -73,3 +73,13 @@ public ArrayList<MSTCUSTOMER> getSearch(String name, String sex, String birthday
 			System.out.println(cus.toString());
 		}
 		
+
+
+CUSTOMERACTION
+
+if(action.equals("search")) {
+			System.out.println("Zo");
+			ServletContext context= getServletContext();
+			RequestDispatcher rd= context.getRequestDispatcher("/jsp/T002.jsp");
+			rd.forward(request, response);
+		}
